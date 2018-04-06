@@ -5,7 +5,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
-public class Boid {
+public class Boid1 {
 
     public static float MAX_FORCE = 10.4f;
     public static float MAX_VELOCITY = 10f;
@@ -17,11 +17,11 @@ public class Boid {
     private final float width = 20;
 
 
-    public Boid(float posX, float posY) {
+    public Boid1(float posX, float posY) {
         this(posX, posY, 10);
     }
 
-    public Boid(float posX, float posY, float totalMass) {
+    public Boid1(float posX, float posY, float totalMass) {
         position = new Vector2f(posX, posY);
         velocity = new Vector2f(-1, -2);
         mass = totalMass;
@@ -60,12 +60,10 @@ public class Boid {
 //        graphics.setColor(Color.green);
 //        graphics.drawLine(position.x, position.y, velocity.x, velocity.y);
 
-        renderForces(graphics, velocity, new Color(0x00FF00));
-
     }
 
 
-    private void renderForces(Graphics graphics, Vector2f force, Color color){
+    void renderForces(Graphics graphics, Vector2f force, Color color){
         renderForces(graphics, force, color, 100.f);
     }
     private void renderForces(Graphics graphics, Vector2f force, Color color, float scale) {
