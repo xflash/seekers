@@ -1,10 +1,7 @@
 package org.xflash.lwjgl.seekers;
 
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.AppGameContainer;
-import org.xflash.lwjgl.seekers.flee.FleeGame;
-import org.xflash.lwjgl.seekers.seek2.Seeker2;
-import org.xflash.lwjgl.seekers.smp.Lighter;
+import org.xflash.lwjgl.seekers.arrival.flee.ArrivalGame;
 
 public class Launcher {
 
@@ -12,7 +9,8 @@ public class Launcher {
         try {
             AppGameContainer container = new AppGameContainer(
 //                    new Lighter(),
-                    new FleeGame(),
+//                    new FleeGame(),
+                    new ArrivalGame(),
 //                    new Seeker2(),
 //                    320, 240,
                     800, 600,
