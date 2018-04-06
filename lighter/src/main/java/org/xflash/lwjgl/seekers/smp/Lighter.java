@@ -210,6 +210,7 @@ public class Lighter extends BasicGame {
                     image.setColor(Image.TOP_RIGHT, light, light, light, 1);
                     image.setColor(Image.BOTTOM_RIGHT, light, light, light, 1);
                     image.setColor(Image.BOTTOM_LEFT, light, light, light, 1);
+
                 }
 
                 // draw the image with it's newly declared vertex colours

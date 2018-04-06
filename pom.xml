@@ -74,6 +74,7 @@
         <module>./flee</module>
         <module>./arrival</module>
         <module>./wander</module>
+        <module>./pursuit</module>
     </modules>
 
 </project>
