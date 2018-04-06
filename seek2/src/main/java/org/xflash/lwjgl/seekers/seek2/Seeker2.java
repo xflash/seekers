@@ -11,7 +11,7 @@ public class Seeker2 extends BasicGame {
     private ArrayList<Boid2> boids = new ArrayList<>();
 
     public Seeker2() {
-        super("Seeker1");
+        super("Seeker2");
         nb = 1;
     }
 
