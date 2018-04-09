@@ -1,4 +1,4 @@
-package org.xflash.lwjgl.seekers.seek1;
+package org.xflash.lwjgl.seekers.basic;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Vector2f;

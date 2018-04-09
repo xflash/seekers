@@ -68,6 +68,7 @@
 
 
     <modules>
+        <module>./basic</module>
         <module>./lighter</module>
         <module>./seek1</module>
         <module>./seek2</module>
