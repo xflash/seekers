@@ -53,9 +53,9 @@ public class Basic extends BasicGame {
 
     private void renderForces(Graphics g, Boid boid) {
 
-        Vector2f desired = boid.desired.copy();
+        Vector2f desired = boid.steeringManager.desired.copy();
         Vector2f velocity = boid.velocity.copy();
-        Vector2f steering = boid.steering.copy();
+        Vector2f steering = boid.steeringManager.steering.copy();
 
         velocity.normalise();
         desired.normalise();

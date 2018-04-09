@@ -3,22 +3,22 @@ package org.xflash.lwjgl.seekers.basic;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.ShapeFill;
+import org.newdawn.slick.fills.GradientFill;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 
-public class Boid {
+public class Boid implements IBoid {
 
-    private static float MAX_FORCE = 2.4f;
     private static float MAX_VELOCITY = 3f;
 
     Vector2f position;
     Vector2f velocity;
-    Vector2f desired;
-    Vector2f steering;
     private float mass;
     Shape shape;
+    SteeringManager steeringManager;
 
 
     public Boid(float posX, float posY) {
@@ -28,12 +28,10 @@ public class Boid {
     public Boid(float posX, float posY, float totalMass) {
         position = new Vector2f(posX, posY);
         velocity = new Vector2f(-1, -2);
-        desired = new Vector2f(0, 0);
-        steering = new Vector2f(0, 0);
-
         mass = totalMass;
 
-        truncate(velocity, MAX_VELOCITY);
+        steeringManager = new SteeringManager(this);
+
         shape = createShape();
         shape = shape.transform(Transform.createRotateTransform(
                 (float) Math.toRadians(90.)
@@ -49,29 +47,10 @@ public class Boid {
         return polygon;
     }
 
-    public void truncate(Vector2f vector, float max) {
-        vector.scale(Math.min(1.f, max / vector.length()));
-    }
-
-    private Vector2f seek(Vector2f target) {
-        desired = target.copy().sub(position);
-        desired.normalise();
-        desired.scale(MAX_VELOCITY);
-
-        return desired.copy().sub(velocity);
-    }
-
     public void update(GameContainer container, int delta, Vector2f mouse) {
 
-        steering = seek(mouse);
-
-        truncate(steering, MAX_FORCE);
-        steering.scale(1 / mass);
-
-        velocity.add(steering);
-        truncate(velocity, MAX_VELOCITY);
-
-        position.add(velocity);
+        steeringManager.flee(mouse);
+        steeringManager.update(container);
     }
 
     public void render(GameContainer container, Graphics graphics) {
@@ -88,17 +67,30 @@ public class Boid {
         graphics.rotate(cx, cy,
                 (float) velocity.getTheta()
         );
-        graphics.draw(shape);
+        graphics.fill(shape);
         graphics.resetTransform();
 
-        graphics.drawString(String.format("vel: %f", velocity.getTheta()), position.x + 10, position.y);
-
-//        graphics.endFill();
-
-//        graphics.setColor(Color.green);
-//        graphics.drawLine(position.x, position.y, velocity.x, velocity.y);
-
+//        graphics.drawString(String.format("vel: %f", velocity.getTheta()), position.x + 10, position.y);
     }
 
 
+    @Override
+    public Vector2f getPosition() {
+        return position;
+    }
+
+    @Override
+    public Vector2f getVelocity() {
+        return velocity;
+    }
+
+    @Override
+    public float getMaxVelocity() {
+        return MAX_VELOCITY;
+    }
+
+    @Override
+    public float getMass() {
+        return mass;
+    }
 }
