@@ -19,8 +19,8 @@ public class Basic extends BasicGame {
     public void init(GameContainer container) throws SlickException {
         for (int i = 0; i < nb; i++) {
             boids.add(new Boid(
-                    (float)(container.getWidth() * Math.random()),
-                    (float)(container.getHeight()* Math.random()),
+                    (float) (container.getWidth() * Math.random()),
+                    (float) (container.getHeight() * Math.random()),
                     ((float) (5.f + Math.random() * 20.))));
         }
     }
@@ -40,13 +40,41 @@ public class Basic extends BasicGame {
 //        g.clear();
         g.setBackground(Color.white);
 
+        for (Boid boid : boids) {
+            boid.render(container, g);
+            renderForces(g, boid);
+        }
+
+        // Target
         g.setColor(new Color(0x323232));
         g.drawOval(input.getMouseX(), input.getMouseY(), 10, 10);
 
-        for (Boid boid : boids) {
-            boid.render(container, g);
-            boid.renderForces(g, boid.velocity, new Color(0x00FF00));
+    }
 
-        }
+    private void renderForces(Graphics g, Boid boid) {
+
+        Vector2f desired = boid.desired.copy();
+        Vector2f velocity = boid.velocity.copy();
+        Vector2f steering = boid.steering.copy();
+
+        velocity.normalise();
+        desired.normalise();
+        steering.normalise();
+
+        // Force vectors
+        renderForces(g, boid, velocity, new Color(0x00FF00), 100.f);
+        renderForces(g, boid, desired, new Color(0x454545), 100.f);
+        renderForces(g, boid, steering, new Color(0x0000FF), 10.f);
+    }
+
+
+    private void renderForces(Graphics graphics, Boid boid, Vector2f force, Color color, float scale) {
+        graphics.setLineWidth(2);
+        graphics.setColor(color);
+        graphics.translate(boid.position.x, boid.position.y);
+        graphics.translate(boid.shape.getCenterX(), boid.shape.getCenterY());
+        graphics.drawLine(0, 0, force.x * scale, force.y * scale);
+        graphics.resetTransform();
+        graphics.resetLineWidth();
     }
 }
