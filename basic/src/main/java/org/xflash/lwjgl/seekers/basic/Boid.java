@@ -56,7 +56,7 @@ public class Boid implements IBoid {
         if(target!=null)
             steeringManager.pursuit(target);
         else
-            steeringManager.seek(mouse);
+            steeringManager.flee(mouse);
 
         steeringManager.update(container);
     }

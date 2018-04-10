@@ -16,6 +16,7 @@ public interface ISteeringManager {
 //    void evade(IBoid target);
 
     void pursuit(IBoid target);
+    void evade(IBoid target);
 
     void update(GameContainer container);
 }

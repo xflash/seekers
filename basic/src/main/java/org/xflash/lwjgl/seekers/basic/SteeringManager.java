@@ -74,6 +74,11 @@ public class SteeringManager implements ISteeringManager {
     }
 
     @Override
+    public void evade(IBoid target) {
+        steering.add(doEvade(target));
+    }
+
+    @Override
     public void update(GameContainer container) {
         Vector2f velocity = host.getVelocity();
         Vector2f position = host.getPosition();
@@ -160,6 +165,22 @@ public class SteeringManager implements ISteeringManager {
         tv.scale(updatesNeeded);
 
         return doSeek(target.getPosition().copy().add(tv), 0);
+    }
+
+    /**
+     * @param target
+     * @return
+     */
+    private Vector2f doEvade(IBoid target) {
+        Vector2f distance = target.getPosition().copy().sub(host.getPosition());
+
+        float updatesAhead = distance.length() / host.getMaxVelocity();
+
+
+        Vector2f tv = target.getPosition().copy().add(target.getVelocity());
+        tv.scale(updatesAhead);
+
+        return doFlee(tv);
     }
 
 
