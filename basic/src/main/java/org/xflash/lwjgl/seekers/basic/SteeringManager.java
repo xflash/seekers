@@ -57,19 +57,12 @@ public class SteeringManager implements ISteeringManager {
 
         Vector2f displacement = new Vector2f(0, -1);
         displacement.scale(CIRCLE_RADIUS);
-
-        setAngle(displacement, wanderAngle);
+        displacement.setTheta(Math.toDegrees(wanderAngle));
         wanderAngle += Math.random() * ANGLE_CHANGE - ANGLE_CHANGE * .5;
 
         return wanderForce.add(displacement);
     }
 
-
-    public void setAngle(Vector2f vector, float value) {
-        float len = vector.length();
-        vector.x = (float) (Math.cos(value) * len);
-        vector.y = (float) (Math.sin(value) * len);
-    }
 
     public float getAngle(Vector2f vector) {
         return (float) Math.atan2(vector.y, vector.x);
@@ -101,7 +94,7 @@ public class SteeringManager implements ISteeringManager {
         }
     }
 
-    private void reset(GameContainer container) {
+    void reset(GameContainer container) {
             Vector2f velocity = host.getVelocity();
             Vector2f position = host.getPosition();
 

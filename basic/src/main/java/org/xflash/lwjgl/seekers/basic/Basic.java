@@ -9,20 +9,36 @@ public class Basic extends BasicGame {
 
     private final int nb;
     private ArrayList<Boid> boids = new ArrayList<>();
+    private boolean showForces;
 
     public Basic() {
         super("Basic");
-        nb = 2;
+        nb = 3;
     }
 
     @Override
     public void init(GameContainer container) throws SlickException {
         for (int i = 0; i < nb; i++) {
-            boids.add(new Boid(
-                    (float) (container.getWidth() * Math.random()),
-                    (float) (container.getHeight() * Math.random()),
-                    ((float) (5.f + Math.random() * 20.))));
+            Boid boid = new Boid(i,
+                    (float) (container.getWidth()/2 *  Math.random() * 0.8),
+                    (float) (container.getHeight()/2 * Math.random() * 0.8),
+                    ((float) (20.f + Math.random() * 20.)));
+            boids.add(boid);
+//            boid.steeringManager.reset(container);
         }
+
+        Boid lastBoid = boids.get(boids.size() - 1);
+        lastBoid.target = null;
+        for (int i = 0; i < boids.size(); i++) {
+            if(i != boids.size() - 1) {
+                boids.get(i).target = lastBoid;
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(int button, int x, int y) {
+        showForces=!showForces;
     }
 
     @Override
@@ -42,7 +58,7 @@ public class Basic extends BasicGame {
 
         for (Boid boid : boids) {
             boid.render(container, g);
-            renderForces(g, boid);
+            if(showForces)renderForces(g, boid);
         }
 
         // Target

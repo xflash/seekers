@@ -9,7 +9,8 @@ public class Launcher {
         try {
             AppGameContainer container = new AppGameContainer(
                     new Basic(),
-                    320, 240,
+                    800, 600,
+//                    320, 240,
                     false);
             container.setTargetFrameRate(60);
             container.start();
