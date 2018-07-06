@@ -76,6 +76,7 @@
         <module>./arrival</module>
         <module>./wander</module>
         <module>./pursuit</module>
+        <module>./azul</module>
     </modules>
 
 </project>
