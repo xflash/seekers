@@ -3,6 +3,7 @@ package org.xflash.lwjgl.azul.states;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.StateBasedGame;
+import org.xflash.lwjgl.azul.AzulGame;
 import org.xflash.lwjgl.azul.ui.Button;
 
 public class MainMenuState extends StateScreen {
@@ -24,6 +25,8 @@ public class MainMenuState extends StateScreen {
             if(text!=null) {
                 try {
                     Integer nb = Integer.parseInt(text);
+                    ((AzulGame) game).setup(nb);
+
                     game.enterState(States.IN_GAME.ordinal());
                 } catch (NumberFormatException ignored) {
 
