@@ -12,7 +12,7 @@ public class Button extends MouseOverArea {
     private final String label;
 
     public Button(GUIContext container, String label, int x, int y, ComponentListener componentListener) {
-        super(container, null, x, y, 200, 25, componentListener);
+        super(container, null, x, y, 150, 25, componentListener);
         this.label = label;
 
         setNormalColor(Color.lightGray);

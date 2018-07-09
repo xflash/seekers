@@ -7,6 +7,7 @@ import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.states.InGameState;
 import org.xflash.lwjgl.azul.states.MainMenuState;
 import org.xflash.lwjgl.azul.states.SplashScreen;
+import org.xflash.lwjgl.azul.states.States;
 
 public class AzulGame extends StateBasedGame {
 
@@ -29,12 +30,18 @@ public class AzulGame extends StateBasedGame {
     public void setup(int nb) {
         players = new Player[nb];
         for (int i = 0; i < nb; i++) {
-            players[i]=new Player(i+1);
+            players[i] = new Player(i + 1);
         }
-        currentPlayer=0;
+        currentPlayer = 0;
+        enterState(States.IN_GAME.ordinal());
     }
 
     public Player getCurrentPlayer() {
         return players[currentPlayer];
+    }
+
+    public void switchPlayer() {
+        currentPlayer = currentPlayer + 1 >= players.length ? 0 : currentPlayer + 1;
+        enterState(States.IN_GAME.ordinal());
     }
 }

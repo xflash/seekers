@@ -19,6 +19,7 @@ public class MainMenuState extends StateScreen {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
 
         textField = new TextField(container, container.getDefaultFont(), 50, 30, 200, 25);
+        textField.setText("2");
 
         ok = new Button(container, "OK", 50, 50, source -> {
             String text = textField.getText();
@@ -27,7 +28,6 @@ public class MainMenuState extends StateScreen {
                     Integer nb = Integer.parseInt(text);
                     ((AzulGame) game).setup(nb);
 
-                    game.enterState(States.IN_GAME.ordinal());
                 } catch (NumberFormatException ignored) {
 
                 }
