@@ -1,6 +1,7 @@
 package org.xflash.lwjgl.azul.states.elements;
 
 import org.junit.Test;
+import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
 
 public class RadialDispatcherTest {
     @Test

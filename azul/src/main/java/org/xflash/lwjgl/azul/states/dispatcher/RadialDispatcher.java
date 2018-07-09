@@ -1,4 +1,4 @@
-package org.xflash.lwjgl.azul.states.elements;
+package org.xflash.lwjgl.azul.states.dispatcher;
 
 import java.util.function.BiConsumer;
 
