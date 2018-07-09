@@ -2,7 +2,7 @@ package org.xflash.lwjgl.azul.states.dispatcher;
 
 import java.util.function.BiConsumer;
 
-public class HalfGridDispatcher {
+public class HalfGridDispatcher implements CoordDispatcher<Float> {
 
     private final float width;
     private final float spacer;

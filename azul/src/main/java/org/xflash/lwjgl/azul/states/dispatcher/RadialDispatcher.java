@@ -2,7 +2,7 @@ package org.xflash.lwjgl.azul.states.dispatcher;
 
 import java.util.function.BiConsumer;
 
-public class RadialDispatcher {
+public class RadialDispatcher implements CoordDispatcher<Float> {
     private final int nb;
     private final int rayon;
     private final double offset;
