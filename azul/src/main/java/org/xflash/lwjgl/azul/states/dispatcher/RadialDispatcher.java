@@ -4,12 +4,12 @@ import java.util.function.BiConsumer;
 
 public class RadialDispatcher implements CoordDispatcher<Float> {
     private final int nb;
-    private final int rayon;
+    private final float radius;
     private final double offset;
 
-    public RadialDispatcher(int nb, int rayon) {
+    public RadialDispatcher(int nb, float radius) {
         this.nb = nb;
-        this.rayon = rayon;
+        this.radius = radius;
         offset = 90;
     }
 
@@ -17,8 +17,8 @@ public class RadialDispatcher implements CoordDispatcher<Float> {
         for (double angle = 0; angle < 360; angle += (360 / nb)) {
             double angle_rad = Math.toRadians(angle + offset);
             consumer.accept(
-                    (float) Math.cos(angle_rad) * rayon,
-                    (float) Math.sin(angle_rad) * rayon);
+                    (float) Math.cos(angle_rad) * radius,
+                    (float) Math.sin(angle_rad) * radius);
         }
     }
 }

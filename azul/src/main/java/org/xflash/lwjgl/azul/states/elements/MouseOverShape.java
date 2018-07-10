@@ -130,6 +130,22 @@ public abstract class MouseOverShape extends AbstractComponent {
         }
     }
 
+    public void setColor(Color color) {
+        normalColor =color;
+    }
+
+    public Color getColor() {
+        return normalColor;
+    }
+
+    public void setOverColor(Color color) {
+        mouseOverColor = color;
+    }
+
+    public void setDownColor(Color color) {
+        mouseDownColor=color;
+    }
+
     private enum State {
         NORMAL, MOUSE_DOWN, MOUSE_OVER
     }
