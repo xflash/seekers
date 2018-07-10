@@ -17,7 +17,7 @@ import java.util.List;
 public class AzulGame extends StateBasedGame {
 
     private int currentPlayer;
-    private Player[] players;
+    private List<Player> players;
     private TileSet tileSet;
     private List<Fabrick> fabricks;
 
@@ -35,9 +35,9 @@ public class AzulGame extends StateBasedGame {
     }
 
     public void setup(int nb) {
-        players = new Player[nb];
+        players = new ArrayList<>();
         for (int i = 0; i < nb; i++) {
-            players[i] = new Player(i + 1);
+            players.add(new Player(i + 1));
         }
         currentPlayer = 0;
         tileSet = new TileSet();
@@ -72,11 +72,11 @@ public class AzulGame extends StateBasedGame {
     }
 
     public Player getCurrentPlayer() {
-        return players[currentPlayer];
+        return players.get(currentPlayer);
     }
 
     public void switchPlayer() {
-        currentPlayer = currentPlayer + 1 >= players.length ? 0 : currentPlayer + 1;
+        currentPlayer = currentPlayer + 1 >= players.size() ? 0 : currentPlayer + 1;
         enterState(States.IN_GAME.ordinal());
     }
 

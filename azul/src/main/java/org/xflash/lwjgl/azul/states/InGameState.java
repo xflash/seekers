@@ -9,6 +9,7 @@ import org.xflash.lwjgl.azul.states.dispatcher.GridDispatcher;
 import org.xflash.lwjgl.azul.states.dispatcher.HalfGridDispatcher;
 import org.xflash.lwjgl.azul.states.elements.DropzonePicker;
 import org.xflash.lwjgl.azul.states.elements.FabricksPicker;
+import org.xflash.lwjgl.azul.states.elements.PlayerPicker;
 import org.xflash.lwjgl.azul.states.elements.WallPart;
 import org.xflash.lwjgl.azul.ui.Button;
 
@@ -21,6 +22,7 @@ public class InGameState extends StateScreen {
     private WallPart preparationWall;
     private WallPart wall;
     private DropzonePicker dropZonePicker;
+    private PlayerPicker playerPicker;
 
     public InGameState() {
         super(States.IN_GAME);
@@ -61,6 +63,10 @@ public class InGameState extends StateScreen {
                 container.getWidth() / 2, container.getHeight() / 4
         );
 
+        playerPicker = new PlayerPicker(container, azulGame.getCurrentPlayer(),
+                10, (int)(container.getHeight() * (1.f / 3.f))
+        );
+
     }
 
     @Override
@@ -77,6 +83,7 @@ public class InGameState extends StateScreen {
         dropZonePicker.render(container, g);
         preparationWall.render(container, g);
         wall.render(container, g);
+        playerPicker.render(container, g);
     }
 
     @Override
