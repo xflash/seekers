@@ -7,14 +7,14 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.xflash.lwjgl.azul.AzulGame;
 import org.xflash.lwjgl.azul.states.dispatcher.GridDispatcher;
 import org.xflash.lwjgl.azul.states.dispatcher.HalfGridDispatcher;
-import org.xflash.lwjgl.azul.states.elements.Fabricks;
+import org.xflash.lwjgl.azul.states.elements.FabricksPicker;
 import org.xflash.lwjgl.azul.states.elements.WallPart;
 import org.xflash.lwjgl.azul.ui.Button;
 
 public class InGameState extends StateScreen {
 
     Phase phase = Phase.PREPARE;
-    private Fabricks fabricks;
+    private FabricksPicker fabricksPicker;
     private AzulGame azulGame;
     private Button ok;
     private WallPart preparationWall;
@@ -29,7 +29,7 @@ public class InGameState extends StateScreen {
         azulGame = (AzulGame) game;
         System.out.println("init GameState with Game " + game);
 
-        fabricks = new Fabricks(container, 5,
+        fabricksPicker = new FabricksPicker(container, 5,
                 container.getWidth() / 2, container.getHeight() / 4,
                 source-> {
                     System.out.println("source = " + source);
@@ -65,7 +65,7 @@ public class InGameState extends StateScreen {
         g.drawString(String.format("In Game for %s phase %s", azulGame.getCurrentPlayer(), phase),
                 container.getWidth() / 2, 25);
         ok.render(container, g);
-        fabricks.render(container, g);
+        fabricksPicker.render(container, g);
         preparationWall.render(container, g);
         wall.render(container, g);
     }

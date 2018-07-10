@@ -7,33 +7,32 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.AbstractComponent;
 import org.newdawn.slick.gui.ComponentListener;
 import org.newdawn.slick.gui.GUIContext;
-import org.newdawn.slick.util.InputAdapter;
 
 
-public class Fabrick extends AbstractComponent {
+public abstract class MouseOverShape extends AbstractComponent {
 
+    State state;
+    boolean mouseUp = false;
     private Shape area;
-    private final float radius;
     private boolean over;
     private boolean mouseDown;
     private Color currentColor;
-    private Color normalColor=Color.white;
-    private Color mouseDownColor=Color.darkGray;
-    private Color mouseOverColor=Color.lightGray;
+    private Color normalColor = Color.white;
+    private Color mouseDownColor = Color.darkGray;
+    private Color mouseOverColor = Color.lightGray;
 
-    public Fabrick(GUIContext guiContext, float x, float y, float radius, ComponentListener componentListener) {
+    MouseOverShape(GUIContext guiContext, float x, float y) {
         super(guiContext);
-        this.radius = radius;
-        setLocation((int)x, (int)y);
+        setLocation((int) x, (int) y);
         guiContext.getInput().addMouseListener(this);
-        addListener(componentListener);
     }
 
     @Override
     public void setLocation(int x, int y) {
-        area = new Circle(x, y, radius);
-//        area.setLocation(x, y);
+        area = createShapeAt(x, y);
     }
+
+    abstract Shape createShapeAt(int x, int y);
 
     @Override
     public int getX() {
@@ -62,13 +61,6 @@ public class Fabrick extends AbstractComponent {
         g.draw(area);
         updateImage();
     }
-
-    private enum State {
-        NORMAL, MOUSE_DOWN, MOUSE_OVER
-    }
-
-    State state;
-    boolean mouseUp=false;
 
     private void updateImage() {
 
@@ -136,5 +128,9 @@ public class Fabrick extends AbstractComponent {
         if (button == 0) {
             mouseDown = false;
         }
+    }
+
+    private enum State {
+        NORMAL, MOUSE_DOWN, MOUSE_OVER
     }
 }
