@@ -23,10 +23,12 @@ public class WallPart {
                     final ComponentListener componentListener) {
         this.container = container;
         coordDispatcher.dispatch((x1, y1) -> {
-            squares.add(new MouseOverArea(container, null,
+            MouseOverArea moa = new MouseOverArea(container, null,
                     x + x1.intValue(), y + y1.intValue(),
                     square, square,
-                    componentListener));
+                    componentListener);
+            squares.add(moa);
+            moa.setMouseOverColor(Color.lightGray);
         });
     }
 
