@@ -3,6 +3,7 @@ package org.xflash.lwjgl.azul;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+import org.xflash.lwjgl.azul.model.DropZone;
 import org.xflash.lwjgl.azul.model.Fabrick;
 import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.model.TileSet;
@@ -20,6 +21,7 @@ public class AzulGame extends StateBasedGame {
     private List<Player> players;
     private TileSet tileSet;
     private List<Fabrick> fabricks;
+    private DropZone dropZone;
 
     AzulGame() {
         super("AZUL");
@@ -41,16 +43,12 @@ public class AzulGame extends StateBasedGame {
         }
         currentPlayer = 0;
         tileSet = new TileSet();
+        dropZone=new DropZone();
         fabricks = createFabricks(nb);
         enterState(States.IN_GAME.ordinal());
     }
 
     private List<Fabrick> createFabricks(int nb) {
-/*
-• In a 2-player game, place 5 Factory displays.
-• In a 3-player game, place 7 Factory displays.
-• In a 4-player game, place 9 Factory display
-*/
         switch(nb) {
             case 2: return createFabricksList(5);
             case 3: return createFabricksList(7);
@@ -64,7 +62,7 @@ public class AzulGame extends StateBasedGame {
     private List<Fabrick> createFabricksList(int nb) {
         ArrayList<Fabrick> fabricks = new ArrayList<>();
         for (int i = 0; i < nb; i++) {
-            Fabrick fabrick = new Fabrick(tileSet);
+            Fabrick fabrick = new Fabrick(tileSet, dropZone);
             fabricks.add(fabrick);
             fabrick.pick();
         }
@@ -86,5 +84,9 @@ public class AzulGame extends StateBasedGame {
 
     public TileSet getTileSet() {
         return tileSet;
+    }
+
+    public DropZone getDropZone() {
+        return dropZone;
     }
 }

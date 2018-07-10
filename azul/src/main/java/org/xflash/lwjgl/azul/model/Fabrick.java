@@ -1,9 +1,11 @@
 package org.xflash.lwjgl.azul.model;
 
+import org.newdawn.slick.Color;
+import org.xflash.lwjgl.azul.states.elements.FabrickPicker;
+import org.xflash.lwjgl.azul.states.elements.FabricksPicker;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A Fabrick represent a source of Tiles
@@ -11,20 +13,57 @@ import java.util.Set;
 public class Fabrick {
     private static final int NB_PICK = 4;
     private final TileSet tileSet;
-    private List<Tile> tiles = new ArrayList<>();
+    private final DropZone dropZone;
+    private final TileList tileList = new TileList();
 
-    public Fabrick(TileSet tileSet) {
+    public Fabrick(TileSet tileSet, DropZone dropZone) {
         this.tileSet = tileSet;
+        this.dropZone = dropZone;
     }
 
     public void pick() {
+        pick(NB_PICK);
+    }
 
-        for (int i = 0; i < NB_PICK; i++) {
-            tiles.add(tileSet.pick());
+    public void pick(int nbPick) {
+        for (int i = 0; i < nbPick; i++) {
+            tileList.add(tileSet.pick());
         }
     }
 
-    public List<Tile> getTiles() {
-        return tiles;
+    public Tile getTile(int idx) {
+        return tileList.get(idx);
     }
+
+    public void playerPick(Player currentPlayer, final Color color) {
+        for (Tile tile : tileList) {
+            if (tile.getColor().equals(color))
+                currentPlayer.add(tile);
+            else
+                dropZone.add(tile);
+        }
+        tileList.clear();
+        notifyListeners();
+        currentPlayer.notifyListeners();
+        dropZone.notifyListeners();
+
+    }
+
+    private void notifyListeners() {
+        tileList.notifyListeners();
+    }
+
+    public int getTilesSize() {
+        return tileList.size();
+    }
+
+    public void register(TileNotifier tileNotifier) {
+        tileList.register(tileNotifier);
+
+    }
+
+    public void unregister(TileNotifier tileNotifier) {
+        tileList.unregister(tileNotifier);
+    }
+
 }

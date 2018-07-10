@@ -1,10 +1,12 @@
 package org.xflash.lwjgl.azul.states;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.xflash.lwjgl.azul.AzulGame;
+import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.states.dispatcher.GridDispatcher;
 import org.xflash.lwjgl.azul.states.dispatcher.HalfGridDispatcher;
 import org.xflash.lwjgl.azul.states.elements.DropzonePicker;
@@ -23,6 +25,7 @@ public class InGameState extends StateScreen {
     private WallPart wall;
     private DropzonePicker dropZonePicker;
     private PlayerPicker playerPicker;
+    private Player player;
 
     public InGameState() {
         super(States.IN_GAME);
@@ -32,11 +35,6 @@ public class InGameState extends StateScreen {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         azulGame = (AzulGame) game;
         System.out.println("init GameState with Game " + game);
-
-
-        dropZonePicker = new DropzonePicker(container,
-                container.getWidth() / 2, container.getHeight() / 4,
-                source -> System.out.println("source = " + source));
 
         preparationWall = new WallPart(container,
                 (container.getWidth() / 2) - 5 * 33, 10 + (container.getHeight() / 2),
@@ -58,20 +56,37 @@ public class InGameState extends StateScreen {
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-        System.out.println("entering InGameState with Player " + azulGame.getCurrentPlayer() + " phase " + phase);
-        fabricksPicker = new FabricksPicker(container, azulGame.getFabricks(),
+        player = azulGame.getCurrentPlayer();
+        System.out.println("entering InGameState with Player " + player + " phase " + phase);
+
+        dropZonePicker = new DropzonePicker(container, azulGame.getDropZone(),
+                container.getWidth() / 2, container.getHeight() / 4,
+                source -> System.out.println("source = " + source));
+
+        fabricksPicker = new FabricksPicker(container, player, azulGame.getFabricks(),
                 container.getWidth() / 2, container.getHeight() / 4
         );
 
-        playerPicker = new PlayerPicker(container, azulGame.getCurrentPlayer(),
+        playerPicker = new PlayerPicker(container, player,
                 10, (int)(container.getHeight() * (1.f / 3.f))
         );
+    }
+
+    @Override
+    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+        System.out.println("leaving InGameState with Player " + player + " phase " + phase);
+        azulGame.getDropZone().unregister(dropZonePicker);
+        azulGame.getFabricks().forEach(fabrick -> {
+            fabricksPicker.unregister(fabrick);
+        });
+        player.unregister(playerPicker);
 
     }
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 //        g.setBackground(Color.lightGray);
+        g.setColor(Color.white);
         g.drawString(String.format("In Game for %s phase %s", azulGame.getCurrentPlayer(), phase),
                 container.getWidth() / 2, 20);
 
