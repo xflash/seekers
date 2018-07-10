@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TileList  implements Iterable<Tile> {
-    private final ArrayList<TileNotifier> notifiers = new ArrayList<>();
-    private List<Tile> tiles = new ArrayList<>();
+public class TileList implements Iterable<Tile> {
+    private final List<Notifier<List<Tile>>> notifiers = new ArrayList<>();
+    public List<Tile> tiles = new ArrayList<>();
+
 
     public void add(Tile tile) {
         tiles.add(tile);
@@ -23,19 +24,20 @@ public class TileList  implements Iterable<Tile> {
 
     public void clear() {
         tiles.clear();
+        notifyListeners();
     }
 
-    public void register(TileNotifier notifier) {
+    public void register(Notifier<List<Tile>> notifier) {
         notifiers.add(notifier);
     }
 
-    public void unregister(TileNotifier notifier) {
+    public void unregister(Notifier<List<Tile>> notifier) {
         notifiers.remove(notifier);
     }
 
     public void notifyListeners() {
-        for (TileNotifier notifier : notifiers) {
-            notifier.listChange(tiles);
+        for (Notifier<List<Tile>> notifier : notifiers) {
+            notifier.onChange(tiles);
         }
     }
 

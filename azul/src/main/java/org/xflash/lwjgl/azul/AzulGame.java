@@ -3,25 +3,26 @@ package org.xflash.lwjgl.azul;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
-import org.xflash.lwjgl.azul.model.DropZone;
-import org.xflash.lwjgl.azul.model.Fabrick;
-import org.xflash.lwjgl.azul.model.Player;
-import org.xflash.lwjgl.azul.model.TileSet;
+import org.xflash.lwjgl.azul.model.*;
 import org.xflash.lwjgl.azul.states.InGameState;
 import org.xflash.lwjgl.azul.states.MainMenuState;
 import org.xflash.lwjgl.azul.states.SplashScreen;
 import org.xflash.lwjgl.azul.states.States;
+import org.xflash.lwjgl.azul.states.elements.FabricksPicker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 
 public class AzulGame extends StateBasedGame {
 
+    private final ArrayList<Notifier<List<Fabrick>>> fabricksObservers = new ArrayList<>();
     private int currentPlayer;
     private List<Player> players;
     private TileSet tileSet;
     private List<Fabrick> fabricks;
     private DropZone dropZone;
+    private ArrayList<PlayerNotifier> playerNotifiers = new ArrayList<>();
 
     AzulGame() {
         super("AZUL");
@@ -34,6 +35,7 @@ public class AzulGame extends StateBasedGame {
         this.addState(new SplashScreen());
         this.addState(new MainMenuState());
         this.addState(new InGameState());
+        dropZone=new DropZone();
     }
 
     public void setup(int nb) {
@@ -43,9 +45,15 @@ public class AzulGame extends StateBasedGame {
         }
         currentPlayer = 0;
         tileSet = new TileSet();
-        dropZone=new DropZone();
         fabricks = createFabricks(nb);
+
+        dropZone.clean();
+
         enterState(States.IN_GAME.ordinal());
+        for (Notifier<List<Fabrick>> fabricksObserver : fabricksObservers) {
+            System.out.println("onChange = " + fabricksObserver);
+            fabricksObserver.onChange(fabricks);
+        }
     }
 
     private List<Fabrick> createFabricks(int nb) {
@@ -75,6 +83,9 @@ public class AzulGame extends StateBasedGame {
 
     public void switchPlayer() {
         currentPlayer = currentPlayer + 1 >= players.size() ? 0 : currentPlayer + 1;
+        for (PlayerNotifier playerNotifier : playerNotifiers) {
+            playerNotifier.onChange(getCurrentPlayer());
+        }
         enterState(States.IN_GAME.ordinal());
     }
 
@@ -88,5 +99,19 @@ public class AzulGame extends StateBasedGame {
 
     public DropZone getDropZone() {
         return dropZone;
+    }
+
+    public void registerFabricksObserver(Notifier<List<Fabrick>> fabListNotifier) {
+        fabricksObservers.add(fabListNotifier);
+    }
+    public void unregisterFabricksObserver(Notifier<List<Fabrick>> fabListNotifier) {
+        fabricksObservers.remove(fabListNotifier);
+    }
+
+    public void registerPlayerObserver(PlayerNotifier playerNotifier) {
+        playerNotifiers.add(playerNotifier);
+    }
+    public void unregisterPlayerObserver(PlayerNotifier playerNotifier) {
+        playerNotifiers.remove(playerNotifier);
     }
 }

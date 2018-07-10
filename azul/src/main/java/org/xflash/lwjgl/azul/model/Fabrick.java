@@ -1,10 +1,7 @@
 package org.xflash.lwjgl.azul.model;
 
 import org.newdawn.slick.Color;
-import org.xflash.lwjgl.azul.states.elements.FabrickPicker;
-import org.xflash.lwjgl.azul.states.elements.FabricksPicker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +11,7 @@ public class Fabrick {
     private static final int NB_PICK = 4;
     private final TileSet tileSet;
     private final DropZone dropZone;
-    private final TileList tileList = new TileList();
+    public final TileList tileList = new TileList();
 
     public Fabrick(TileSet tileSet, DropZone dropZone) {
         this.tileSet = tileSet;
@@ -29,6 +26,7 @@ public class Fabrick {
         for (int i = 0; i < nbPick; i++) {
             tileList.add(tileSet.pick());
         }
+        notifyListeners();
     }
 
     public Tile getTile(int idx) {
@@ -43,13 +41,12 @@ public class Fabrick {
                 dropZone.add(tile);
         }
         tileList.clear();
-        notifyListeners();
         currentPlayer.notifyListeners();
         dropZone.notifyListeners();
 
     }
 
-    private void notifyListeners() {
+    public void notifyListeners() {
         tileList.notifyListeners();
     }
 
@@ -57,13 +54,13 @@ public class Fabrick {
         return tileList.size();
     }
 
-    public void register(TileNotifier tileNotifier) {
-        tileList.register(tileNotifier);
+    public void register(Notifier<List<Tile>> notifier) {
+        tileList.register(notifier);
 
     }
 
-    public void unregister(TileNotifier tileNotifier) {
-        tileList.unregister(tileNotifier);
+    public void unregister(Notifier<List<Tile>> notifier) {
+        tileList.unregister(notifier);
     }
 
 }

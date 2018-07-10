@@ -6,6 +6,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.xflash.lwjgl.azul.AzulGame;
+import org.xflash.lwjgl.azul.model.Fabrick;
 import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.states.dispatcher.GridDispatcher;
 import org.xflash.lwjgl.azul.states.dispatcher.HalfGridDispatcher;
@@ -52,35 +53,33 @@ public class InGameState extends StateScreen {
         ok = new Button(container, "OK", container.getWidth() - 200, container.getHeight() - 30, source -> {
             azulGame.switchPlayer();
         });
+
+        dropZonePicker = new DropzonePicker(container,
+                container.getWidth() / 2, container.getHeight() / 4
+        );
+        azulGame.getDropZone().register(dropZonePicker);
+
+        fabricksPicker = new FabricksPicker(container,
+                container.getWidth() / 2, container.getHeight() / 4
+        );
+        azulGame.registerFabricksObserver(fabricksPicker);
+        azulGame.registerPlayerObserver(fabricksPicker);
+
+        playerPicker = new PlayerPicker(container,
+                10, (int) (container.getHeight() * (1.f / 3.f))
+        );
+        azulGame.registerPlayerObserver(playerPicker);
     }
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         player = azulGame.getCurrentPlayer();
         System.out.println("entering InGameState with Player " + player + " phase " + phase);
-
-        dropZonePicker = new DropzonePicker(container, azulGame.getDropZone(),
-                container.getWidth() / 2, container.getHeight() / 4,
-                source -> System.out.println("source = " + source));
-
-        fabricksPicker = new FabricksPicker(container, player, azulGame.getFabricks(),
-                container.getWidth() / 2, container.getHeight() / 4
-        );
-
-        playerPicker = new PlayerPicker(container, player,
-                10, (int)(container.getHeight() * (1.f / 3.f))
-        );
     }
 
     @Override
     public void leave(GameContainer container, StateBasedGame game) throws SlickException {
         System.out.println("leaving InGameState with Player " + player + " phase " + phase);
-        azulGame.getDropZone().unregister(dropZonePicker);
-        azulGame.getFabricks().forEach(fabrick -> {
-            fabricksPicker.unregister(fabrick);
-        });
-        player.unregister(playerPicker);
-
     }
 
     @Override
@@ -107,6 +106,6 @@ public class InGameState extends StateScreen {
     }
 
     private enum Phase {
-        PREPARE, BUILD
+        PREPARE(), BUILD
     }
 }

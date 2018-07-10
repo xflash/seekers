@@ -1,8 +1,5 @@
 package org.xflash.lwjgl.azul.model;
 
-import org.xflash.lwjgl.azul.states.elements.PlayerPicker;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
@@ -40,11 +37,11 @@ public class Player {
         return tileList.size();
     }
 
-    public void register(TileNotifier tileNotifier) {
-        tileList.register(tileNotifier);
+    public void register(Notifier<List<Tile>> notifier) {
+        tileList.register(notifier);
     }
 
-    public void unregister(TileNotifier tileNotifier) {
-        tileList.unregister(tileNotifier);
+    public void unregister(Notifier<List<Tile>> notifier) {
+        tileList.unregister(notifier);
     }
 }
