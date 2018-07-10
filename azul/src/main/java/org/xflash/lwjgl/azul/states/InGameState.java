@@ -31,9 +31,6 @@ public class InGameState extends StateScreen {
         azulGame = (AzulGame) game;
         System.out.println("init GameState with Game " + game);
 
-        fabricksPicker = new FabricksPicker(container, 5,
-                container.getWidth() / 2, container.getHeight() / 4,
-                source -> System.out.println("source = " + source));
 
         dropZonePicker = new DropzonePicker(container,
                 container.getWidth() / 2, container.getHeight() / 4,
@@ -60,6 +57,9 @@ public class InGameState extends StateScreen {
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         System.out.println("entering InGameState with Player " + azulGame.getCurrentPlayer() + " phase " + phase);
+        fabricksPicker = new FabricksPicker(container, azulGame.getFabricks(),
+                container.getWidth() / 2, container.getHeight() / 4
+        );
 
     }
 
@@ -67,7 +67,11 @@ public class InGameState extends StateScreen {
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 //        g.setBackground(Color.lightGray);
         g.drawString(String.format("In Game for %s phase %s", azulGame.getCurrentPlayer(), phase),
-                container.getWidth() / 2, 25);
+                container.getWidth() / 2, 20);
+
+        g.drawString(String.format("Remaining tiles %d", azulGame.getTileSet().remaining()),
+                container.getWidth() * (2.f / 3.f), 30);
+
         ok.render(container, g);
         fabricksPicker.render(container, g);
         dropZonePicker.render(container, g);
