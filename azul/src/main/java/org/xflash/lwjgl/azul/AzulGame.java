@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.xflash.lwjgl.azul.model.Player;
+import org.xflash.lwjgl.azul.model.TileSet;
 import org.xflash.lwjgl.azul.states.InGameState;
 import org.xflash.lwjgl.azul.states.MainMenuState;
 import org.xflash.lwjgl.azul.states.SplashScreen;
@@ -13,6 +14,7 @@ public class AzulGame extends StateBasedGame {
 
     private int currentPlayer;
     private Player[] players;
+    private TileSet tileSet;
 
     AzulGame() {
         super("AZUL");
@@ -33,6 +35,7 @@ public class AzulGame extends StateBasedGame {
             players[i] = new Player(i + 1);
         }
         currentPlayer = 0;
+        tileSet = new TileSet();
         enterState(States.IN_GAME.ordinal());
     }
 

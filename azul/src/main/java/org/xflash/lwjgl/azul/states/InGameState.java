@@ -7,6 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.xflash.lwjgl.azul.AzulGame;
 import org.xflash.lwjgl.azul.states.dispatcher.GridDispatcher;
 import org.xflash.lwjgl.azul.states.dispatcher.HalfGridDispatcher;
+import org.xflash.lwjgl.azul.states.elements.DropzonePicker;
 import org.xflash.lwjgl.azul.states.elements.FabricksPicker;
 import org.xflash.lwjgl.azul.states.elements.WallPart;
 import org.xflash.lwjgl.azul.ui.Button;
@@ -19,6 +20,7 @@ public class InGameState extends StateScreen {
     private Button ok;
     private WallPart preparationWall;
     private WallPart wall;
+    private DropzonePicker dropZonePicker;
 
     public InGameState() {
         super(States.IN_GAME);
@@ -31,9 +33,11 @@ public class InGameState extends StateScreen {
 
         fabricksPicker = new FabricksPicker(container, 5,
                 container.getWidth() / 2, container.getHeight() / 4,
-                source-> {
-                    System.out.println("source = " + source);
-                });
+                source -> System.out.println("source = " + source));
+
+        dropZonePicker = new DropzonePicker(container,
+                container.getWidth() / 2, container.getHeight() / 4,
+                source -> System.out.println("source = " + source));
 
         preparationWall = new WallPart(container,
                 (container.getWidth() / 2) - 5 * 33, 10 + (container.getHeight() / 2),
@@ -66,6 +70,7 @@ public class InGameState extends StateScreen {
                 container.getWidth() / 2, 25);
         ok.render(container, g);
         fabricksPicker.render(container, g);
+        dropZonePicker.render(container, g);
         preparationWall.render(container, g);
         wall.render(container, g);
     }

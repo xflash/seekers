@@ -29,6 +29,7 @@ public class WallPart {
                     componentListener);
             squares.add(moa);
             moa.setMouseOverColor(Color.lightGray);
+            moa.setMouseDownColor(Color.darkGray);
         });
     }
 

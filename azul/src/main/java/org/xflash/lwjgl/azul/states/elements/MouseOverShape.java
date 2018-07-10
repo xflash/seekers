@@ -21,7 +21,7 @@ public abstract class MouseOverShape extends AbstractComponent {
     private Color mouseDownColor = Color.darkGray;
     private Color mouseOverColor = Color.lightGray;
 
-    MouseOverShape(GUIContext guiContext, float x, float y) {
+    public MouseOverShape(GUIContext guiContext, float x, float y) {
         super(guiContext);
         setLocation((int) x, (int) y);
         guiContext.getInput().addMouseListener(this);
@@ -32,7 +32,7 @@ public abstract class MouseOverShape extends AbstractComponent {
         area = createShapeAt(x, y);
     }
 
-    abstract Shape createShapeAt(int x, int y);
+    public abstract Shape createShapeAt(int x, int y);
 
     @Override
     public int getX() {
