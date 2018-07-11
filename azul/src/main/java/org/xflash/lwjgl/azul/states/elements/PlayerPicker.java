@@ -10,6 +10,9 @@ import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.model.Tile;
 import org.xflash.lwjgl.azul.ui.MouseOverShape;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +23,10 @@ public class PlayerPicker {
     private final GUIContext guiContext;
     private final int x;
     private final int y;
+    private final PropertyChangeSupport support;
     private List<Shape> shapes = new ArrayList<>();
-    private List<MouseOverShape> toPlay = new ArrayList<>();
+    private List<PlayerPickerTile> toPlay = new ArrayList<>();
+    private Tile playerPickerSelection;
 
     public PlayerPicker(GUIContext guiContext, int x, int y) {
         this.guiContext = guiContext;
@@ -30,34 +35,24 @@ public class PlayerPicker {
         for (int i = 0; i < NB_MAX; i++) {
             shapes.add(new Rectangle(x + i * (sq + margin), y, sq, sq));
         }
+        support = new PropertyChangeSupport(this);
     }
 
     public void onPlayerChange(Player currentPlayer) {
         System.out.println("PlayerPicker onPlayerChange = " + currentPlayer);
-
     }
 
-    public void onPlayerTilesChange(List<Tile> tiles) {
-        System.out.println("PlayerPicker onPlayerTilesChange = " + tiles);
+    public void onPlayerTilesChange(PropertyChangeEvent event) {
+        System.out.println("PlayerPicker onPlayerTilesChange = " + event);
+        List<Tile> tiles = (List<Tile>) event.getNewValue();
         toPlay.clear();
         int tilesNb = tiles.size();
         for (int i = 0; i < tilesNb; i++) {
             Tile tileToPlay = tiles.get(i);
-            MouseOverShape mouseOverShape = new MouseOverShape(guiContext, x + i * (sq + margin), y) {
-                @Override
-                public Shape createShapeAt(int x, int y) {
-                    float v = sq - 5f;
-                    return new Rectangle(x + 2f, y + 2f, v, v);
-                }
-            };
-            toPlay.add(mouseOverShape);
-            Color color = tileToPlay.getColor();
-            mouseOverShape.setColor(color);
-            mouseOverShape.setOverColor(color.brighter());
-            mouseOverShape.setDownColor(color.darker());
-
-            mouseOverShape.addListener((source -> {
+            toPlay.add(new PlayerPickerTile(tileToPlay, guiContext, (int)(x + i * (sq + margin)), y, (int)sq-5, source -> {
                 System.out.println("player pick = " + source);
+                support.firePropertyChange("playerPickerSelection", playerPickerSelection, tileToPlay);
+                this.playerPickerSelection = tileToPlay;
             }));
         }
     }
@@ -68,8 +63,15 @@ public class PlayerPicker {
             g.setColor(Color.lightGray);
             g.draw(shape);
         }
-        for (MouseOverShape mouseOverShape : toPlay) {
-            mouseOverShape.render(guiContext, g);
+        for (PlayerPickerTile pickerTile : toPlay) {
+            pickerTile.render(guiContext, g);
+            if(playerPickerSelection!=null && pickerTile.getTile().equals(playerPickerSelection)) {
+                pickerTile.renderSelection(g);
+            }
         }
+    }
+
+    public void addSelectedPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        support.addPropertyChangeListener("playerPickerSelection", propertyChangeListener);
     }
 }

@@ -18,7 +18,7 @@ public abstract class MouseOverShape extends AbstractComponent {
     private boolean mouseDown;
     private Color currentColor;
     private Color normalColor = Color.white;
-    private Color mouseDownColor = Color.darkGray;
+    protected Color mouseDownColor = Color.darkGray;
     private Color mouseOverColor = Color.lightGray;
 
     public MouseOverShape(GUIContext guiContext, float x, float y) {

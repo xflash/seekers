@@ -3,15 +3,13 @@ package org.xflash.lwjgl.azul;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
-import org.xflash.lwjgl.azul.model.DropZone;
-import org.xflash.lwjgl.azul.model.Fabrick;
-import org.xflash.lwjgl.azul.model.Player;
-import org.xflash.lwjgl.azul.model.TileSet;
+import org.xflash.lwjgl.azul.model.*;
 import org.xflash.lwjgl.azul.states.InGameState;
 import org.xflash.lwjgl.azul.states.MainMenuState;
 import org.xflash.lwjgl.azul.states.SplashScreen;
 import org.xflash.lwjgl.azul.states.States;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +17,8 @@ import java.util.List;
 public class AzulGame extends StateBasedGame {
 
     private final PropertyChangeSupport support;
+    private PreparationWall preparationWall;
+    private Wall wall;
     private TileSet tileSet = new TileSet();
 
     private List<Player> players = null;
@@ -29,6 +29,8 @@ public class AzulGame extends StateBasedGame {
     AzulGame() {
         super("AZUL");
         support = new PropertyChangeSupport(this);
+        preparationWall = new PreparationWall();
+        wall = new Wall();
     }
 
     @Override
@@ -36,16 +38,13 @@ public class AzulGame extends StateBasedGame {
         // The first state added will be the one that is loaded first, when the application is launched
         this.addState(new SplashScreen());
         this.addState(new MainMenuState());
-        InGameState inGameState = new InGameState(this);
-        this.addState(inGameState);
-        support.addPropertyChangeListener("players", inGameState::onPlayersListChange);
-        support.addPropertyChangeListener("currentPlayer", inGameState::onCurrentPlayerChange);
-        support.addPropertyChangeListener("dropZone", inGameState::onDropZoneChange);
-        support.addPropertyChangeListener("fabricks", inGameState::onFabricksListChange);
+        this.addState(new InGameState(this, preparationWall, wall));
     }
 
     public void setup(int nb) {
         setDropZone(new DropZone());
+        preparationWall.reset();
+        wall.reset();
         setPlayers(createPlayerList(nb));
         tileSet.reset();
         setFabricks(createFabricks(nb));
@@ -117,5 +116,21 @@ public class AzulGame extends StateBasedGame {
     public void setFabricks(List<Fabrick> fabricks) {
         support.firePropertyChange("fabricks", this.fabricks, fabricks);
         this.fabricks = fabricks;
+    }
+
+    public void addPlayersPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        support.addPropertyChangeListener("players", propertyChangeListener);
+    }
+
+    public void addCurrentPlayerPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        support.addPropertyChangeListener("currentPlayer", propertyChangeListener);
+    }
+
+    public void addDropZonePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        support.addPropertyChangeListener("dropZone", propertyChangeListener);
+    }
+
+    public void addFabricksPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        support.addPropertyChangeListener("fabricks", propertyChangeListener);
     }
 }

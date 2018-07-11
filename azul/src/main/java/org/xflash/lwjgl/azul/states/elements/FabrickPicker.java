@@ -9,6 +9,7 @@ import org.newdawn.slick.gui.GUIContext;
 import org.xflash.lwjgl.azul.model.Fabrick;
 import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.model.Tile;
+import org.xflash.lwjgl.azul.states.InGameState;
 import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
 import org.xflash.lwjgl.azul.ui.MouseOverShape;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 public class FabrickPicker {
 
     private final MouseOverShape mouseOverShape;
+    private final InGameState inGameState;
     private final GUIContext guiContext;
     private final Fabrick fabrick;
     private final float x;
@@ -29,7 +31,8 @@ public class FabrickPicker {
     private Set<MouseOverShape> subTiles = new HashSet<>();
     private Player currentPlayer;
 
-    FabrickPicker(GUIContext guiContext, Fabrick fabrick, float x, float y, float radius) {
+    FabrickPicker(InGameState inGameState, GUIContext guiContext, Fabrick fabrick, float x, float y, float radius) {
+        this.inGameState = inGameState;
         this.guiContext = guiContext;
         this.fabrick = fabrick;
         this.x = x;
@@ -63,7 +66,7 @@ public class FabrickPicker {
                         mouseOverShape.setDownColor(tileColor.darker(.6f));
                         subTiles.add(mouseOverShape);
                         mouseOverShape.addListener((source -> {
-                            fabrick.playerPick(currentPlayer, tileColor);
+                            inGameState.playerPick(fabrick, currentPlayer, tileColor);
                         }));
                     });
         }

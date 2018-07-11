@@ -5,6 +5,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.GUIContext;
 import org.xflash.lwjgl.azul.model.Fabrick;
 import org.xflash.lwjgl.azul.model.Player;
+import org.xflash.lwjgl.azul.states.InGameState;
 import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
 
 import java.util.ArrayList;
@@ -13,11 +14,13 @@ import java.util.List;
 public class FabricksPicker  {
     private final List<FabrickPicker> pickers = new ArrayList<>();
     private final int radius = 60;
+    private final InGameState inGameState;
     private final GUIContext guiContext;
     private final int x;
     private final int y;
 
-    public FabricksPicker(GUIContext guiContext, int x, int y) {
+    public FabricksPicker(InGameState inGameState, GUIContext guiContext, int x, int y) {
+        this.inGameState = inGameState;
         this.guiContext = guiContext;
         this.x = x;
         this.y = y;
@@ -29,11 +32,9 @@ public class FabricksPicker  {
                 .dispatch((x1, y1) -> {
                     Fabrick fabrick = fabricks.get(pickers.size());
 
-                    FabrickPicker fabrickPicker = new FabrickPicker(guiContext, fabrick, x + x1, y + y1, radius / 3);
+                    FabrickPicker fabrickPicker = new FabrickPicker(inGameState, guiContext, fabrick, x + x1, y + y1, radius / 3);
                     pickers.add(fabrickPicker);
                     fabrick.addTilesObserver(fabrickPicker::onTileListChange);
-//                    fabrick.register(fabrickPicker);
-//                    fabrickPicker.onChange(fabrick.tileList.tiles);
                 });
     }
 

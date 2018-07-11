@@ -39,9 +39,8 @@ public class Fabrick {
 
     public void setTiles(List<Tile> tiles) {
         support.firePropertyChange("tiles", this.tiles, tiles);
-        this.tiles =tiles;
+        this.tiles = tiles;
     }
-
 
     public void playerPick(Player currentPlayer, final Color color) {
         List<Tile> playerTiles = new ArrayList<>(currentPlayer.getTiles());
