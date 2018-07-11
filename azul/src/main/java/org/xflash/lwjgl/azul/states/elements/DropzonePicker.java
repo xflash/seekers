@@ -6,14 +6,14 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.GUIContext;
 import org.xflash.lwjgl.azul.model.Tile;
-import org.xflash.lwjgl.azul.model.Notifier;
 import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
+import org.xflash.lwjgl.azul.ui.MouseOverShape;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DropzonePicker implements Notifier<List<Tile>> {
+public class DropzonePicker  {
 
     private final GUIContext guiContext;
     private final int x;
@@ -32,8 +32,7 @@ public class DropzonePicker implements Notifier<List<Tile>> {
         }
     }
 
-    @Override
-    public void onChange(List<Tile> updated) {
+    public void onTilesChange(List<Tile> updated) {
         System.out.println("Dropzon onChange = ");
         subTiles.clear();
         if(updated.size()>0) {

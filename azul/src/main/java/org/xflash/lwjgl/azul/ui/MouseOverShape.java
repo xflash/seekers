@@ -1,4 +1,4 @@
-package org.xflash.lwjgl.azul.states.elements;
+package org.xflash.lwjgl.azul.ui;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;

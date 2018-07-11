@@ -1,11 +1,16 @@
 package org.xflash.lwjgl.azul.model;
 
+import org.xflash.lwjgl.azul.observer.BeanWrapper;
+import org.xflash.lwjgl.azul.observer.Observable;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Player {
     private final int num;
 
-    private final TileList tileList = new TileList();
+    private BeanWrapper<List<Tile>> tiles = new BeanWrapper<>(Collections.emptyList());
 
     public Player(int num) {
         this.num = num;
@@ -17,31 +22,18 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" + num + '}';
+        return "Player{" + getNum() + '}';
     }
 
-
-    public void add(Tile tile) {
-        tileList.add(tile);
-    }
-
-    public void notifyListeners() {
-        tileList.notifyListeners();
+    public int getTilesNb() {
+        return tiles.get().size();
     }
 
     public Tile getTileToPlay(int i) {
-        return tileList.get(i);
+        return tiles.get().get(i);
     }
 
-    public int getTilesToPlay() {
-        return tileList.size();
-    }
-
-    public void register(Notifier<List<Tile>> notifier) {
-        tileList.register(notifier);
-    }
-
-    public void unregister(Notifier<List<Tile>> notifier) {
-        tileList.unregister(notifier);
+    public BeanWrapper<List<Tile>> getTiles() {
+        return tiles;
     }
 }

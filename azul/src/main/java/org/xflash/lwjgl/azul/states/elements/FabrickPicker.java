@@ -7,17 +7,17 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.GUIContext;
 import org.xflash.lwjgl.azul.model.Fabrick;
-import org.xflash.lwjgl.azul.model.Notifier;
 import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.model.Tile;
 import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
+import org.xflash.lwjgl.azul.ui.MouseOverShape;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FabrickPicker implements Notifier<List<Tile>> {
+public class FabrickPicker {
 
     private final MouseOverShape mouseOverShape;
     private final GUIContext guiContext;
@@ -42,8 +42,7 @@ public class FabrickPicker implements Notifier<List<Tile>> {
         };
     }
 
-    @Override
-    public void onChange(List<Tile> updated) {
+    void onTileListChange(List<Tile> updated) {
         subTiles.clear();
         int sz = updated.size();
         if (sz > 0) {
@@ -81,7 +80,4 @@ public class FabrickPicker implements Notifier<List<Tile>> {
         this.currentPlayer = player;
     }
 
-    void unregisterFromFabrick() {
-        fabrick.unregister(this);
-    }
 }

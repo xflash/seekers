@@ -1,7 +1,11 @@
 package org.xflash.lwjgl.azul.model;
 
 import org.newdawn.slick.Color;
+import org.xflash.lwjgl.azul.observer.BeanWrapper;
+import org.xflash.lwjgl.azul.observer.Observable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,7 +15,8 @@ public class Fabrick {
     private static final int NB_PICK = 4;
     private final TileSet tileSet;
     private final DropZone dropZone;
-    public final TileList tileList = new TileList();
+
+    private BeanWrapper<List<Tile>> tiles = new BeanWrapper<>(Collections.emptyList());
 
     public Fabrick(TileSet tileSet, DropZone dropZone) {
         this.tileSet = tileSet;
@@ -22,45 +27,30 @@ public class Fabrick {
         pick(NB_PICK);
     }
 
-    public void pick(int nbPick) {
+    private void pick(int nbPick) {
+        List<Tile> topick = new ArrayList<>();
         for (int i = 0; i < nbPick; i++) {
-            tileList.add(tileSet.pick());
+            topick.add(tileSet.pick());
         }
-        notifyListeners();
+        tiles.set(topick);
     }
 
-    public Tile getTile(int idx) {
-        return tileList.get(idx);
-    }
 
     public void playerPick(Player currentPlayer, final Color color) {
-        for (Tile tile : tileList) {
+        List<Tile> playerTiles = currentPlayer.getTiles().get();
+        List<Tile> dropZoneTiles = dropZone.getTiles().get();
+        for (Tile tile : this.tiles.get()) {
             if (tile.getColor().equals(color))
-                currentPlayer.add(tile);
+                playerTiles.add(tile);
             else
-                dropZone.add(tile);
+                dropZoneTiles.add(tile);
         }
-        tileList.clear();
-        currentPlayer.notifyListeners();
-        dropZone.notifyListeners();
-
+        tiles.set(Collections.emptyList());
+        dropZone.getTiles().set(dropZoneTiles);
+        currentPlayer.getTiles().set(playerTiles);
     }
 
-    public void notifyListeners() {
-        tileList.notifyListeners();
+    public Observable<List<Tile>> getTiles() {
+        return tiles;
     }
-
-    public int getTilesSize() {
-        return tileList.size();
-    }
-
-    public void register(Notifier<List<Tile>> notifier) {
-        tileList.register(notifier);
-
-    }
-
-    public void unregister(Notifier<List<Tile>> notifier) {
-        tileList.unregister(notifier);
-    }
-
 }

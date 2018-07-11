@@ -7,14 +7,13 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.GUIContext;
 import org.xflash.lwjgl.azul.model.Player;
-import org.xflash.lwjgl.azul.model.PlayerNotifier;
 import org.xflash.lwjgl.azul.model.Tile;
-import org.xflash.lwjgl.azul.model.Notifier;
+import org.xflash.lwjgl.azul.ui.MouseOverShape;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerPicker implements Notifier<List<Tile>>,PlayerNotifier {
+public class PlayerPicker {
     private static final int NB_MAX = 4;
     private final int margin = 5;
     private final float sq = 50;
@@ -23,7 +22,6 @@ public class PlayerPicker implements Notifier<List<Tile>>,PlayerNotifier {
     private final int y;
     private List<Shape> shapes = new ArrayList<>();
     private List<MouseOverShape> toPlay = new ArrayList<>();
-    private Player player;
 
     public PlayerPicker(GUIContext guiContext, int x, int y) {
         this.guiContext = guiContext;
@@ -34,12 +32,12 @@ public class PlayerPicker implements Notifier<List<Tile>>,PlayerNotifier {
         }
     }
 
-    @Override
-    public void onChange(List<Tile> updated) {
-        System.out.println("PlayerPicker onChange = " + updated.size());
+    public void onPlayerChange(Player player) {
+        System.out.println("PlayerPicker onPlayerChange = " + player);
         toPlay.clear();
-        for (int i = 0; i < updated.size(); i++) {
-            Tile tileToPlay = updated.get(i);
+        int tilesNb = player.getTilesNb();
+        for (int i = 0; i < tilesNb; i++) {
+            Tile tileToPlay = player.getTileToPlay(i);
             MouseOverShape mouseOverShape = new MouseOverShape(guiContext, x + i * (sq + margin), y) {
                 @Override
                 public Shape createShapeAt(int x, int y) {
@@ -68,14 +66,5 @@ public class PlayerPicker implements Notifier<List<Tile>>,PlayerNotifier {
         for (MouseOverShape mouseOverShape : toPlay) {
             mouseOverShape.render(guiContext, g);
         }
-    }
-
-    @Override
-    public void onChange(Player player) {
-        if(this.player!=null) {
-            this.player.unregister(this);
-        }
-        this.player = player;
-        this.player.register(this);
     }
 }
