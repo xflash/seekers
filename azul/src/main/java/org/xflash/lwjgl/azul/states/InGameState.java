@@ -9,7 +9,7 @@ import org.xflash.lwjgl.azul.AzulGame;
 import org.xflash.lwjgl.azul.model.DropZone;
 import org.xflash.lwjgl.azul.model.Fabrick;
 import org.xflash.lwjgl.azul.model.Player;
-import org.xflash.lwjgl.azul.observer.BeanWrapper;
+import org.xflash.lwjgl.azul.model.Tile;
 import org.xflash.lwjgl.azul.states.dispatcher.GridDispatcher;
 import org.xflash.lwjgl.azul.states.dispatcher.HalfGridDispatcher;
 import org.xflash.lwjgl.azul.states.elements.DropzonePicker;
@@ -18,15 +18,16 @@ import org.xflash.lwjgl.azul.states.elements.PlayerPicker;
 import org.xflash.lwjgl.azul.states.elements.WallPart;
 import org.xflash.lwjgl.azul.ui.Button;
 
+import java.beans.PropertyChangeEvent;
 import java.util.List;
 
 public class InGameState extends StateScreen {
 
     private final AzulGame azulGame;
-    private final BeanWrapper<DropZone> dropZone;
-    private final BeanWrapper<Player> currentPlayer;
-    private final BeanWrapper<List<Fabrick>> fabricks;
     Phase phase = Phase.PREPARE;
+//    private Player currentPlayer;
+//    private List<Fabrick> fabricks;
+
     private FabricksPicker fabricksPicker;
     private Button ok;
     private WallPart preparationWall;
@@ -35,15 +36,9 @@ public class InGameState extends StateScreen {
     private PlayerPicker playerPicker;
     private Player player;
 
-    public InGameState(AzulGame azulGame,
-                       BeanWrapper<DropZone> dropZone,
-                       BeanWrapper<Player> currentPlayer,
-                       BeanWrapper<List<Fabrick>> fabricks) {
+    public InGameState(AzulGame azulGame) {
         super(States.IN_GAME);
         this.azulGame = azulGame;
-        this.dropZone = dropZone;
-        this.currentPlayer = currentPlayer;
-        this.fabricks = fabricks;
     }
 
     @Override
@@ -70,19 +65,14 @@ public class InGameState extends StateScreen {
         dropZonePicker = new DropzonePicker(container,
                 container.getWidth() / 2, container.getHeight() / 4
         );
-        dropZone.addObserver(dropZone-> dropZone.getTiles().addObserver(dropZonePicker::onTilesChange));
 
         fabricksPicker = new FabricksPicker(container,
                 container.getWidth() / 2, container.getHeight() / 4
         );
-        fabricks.addObserver(fabricksPicker::onFabricksListChange);
-        currentPlayer.addObserver(fabricksPicker::onCurrentPlayerChange);
 
         playerPicker = new PlayerPicker(container,
                 10, (int) (container.getHeight() * (1.f / 3.f))
         );
-        currentPlayer.addObserver(playerPicker::onPlayerChange);
-        currentPlayer.addObserver(player -> this.player = player);
     }
 
     @Override
@@ -115,6 +105,35 @@ public class InGameState extends StateScreen {
 
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+
+    }
+
+    public void onCurrentPlayerChange(PropertyChangeEvent propertyChangeEvent) {
+        Player currentPlayer = (Player) propertyChangeEvent.getNewValue();
+        Player oldPlayer = (Player) propertyChangeEvent.getOldValue();
+        if(oldPlayer!=null){
+            oldPlayer.removeTilesObservers();
+        }
+        this.player = currentPlayer;
+        playerPicker.onPlayerChange(currentPlayer);
+        player.addTilesObserver(evt -> playerPicker.onPlayerTilesChange((List<Tile>) evt.getNewValue()));
+        fabricksPicker.onCurrentPlayerChange(currentPlayer);
+
+    }
+
+    public void onDropZoneChange(PropertyChangeEvent evt) {
+        DropZone dropZone = (DropZone) evt.getNewValue();
+        dropZone.addTilesObserver(dropZonePicker::onTilesChange);
+//        this.dropZone.addObserver(dropZone -> dropZone.getTiles().addObserver(dropZonePicker::onTilesChange));
+
+    }
+
+    public void onFabricksListChange(PropertyChangeEvent propertyChangeEvent) {
+        List<Fabrick> fabricks = (List<Fabrick>) propertyChangeEvent.getNewValue();
+        fabricksPicker.onFabricksListChange(fabricks);
+    }
+
+    public void onPlayersListChange(PropertyChangeEvent propertyChangeEvent) {
 
     }
 

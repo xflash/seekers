@@ -32,12 +32,17 @@ public class PlayerPicker {
         }
     }
 
-    public void onPlayerChange(Player player) {
-        System.out.println("PlayerPicker onPlayerChange = " + player);
+    public void onPlayerChange(Player currentPlayer) {
+        System.out.println("PlayerPicker onPlayerChange = " + currentPlayer);
+
+    }
+
+    public void onPlayerTilesChange(List<Tile> tiles) {
+        System.out.println("PlayerPicker onPlayerTilesChange = " + tiles);
         toPlay.clear();
-        int tilesNb = player.getTilesNb();
+        int tilesNb = tiles.size();
         for (int i = 0; i < tilesNb; i++) {
-            Tile tileToPlay = player.getTileToPlay(i);
+            Tile tileToPlay = tiles.get(i);
             MouseOverShape mouseOverShape = new MouseOverShape(guiContext, x + i * (sq + margin), y) {
                 @Override
                 public Shape createShapeAt(int x, int y) {

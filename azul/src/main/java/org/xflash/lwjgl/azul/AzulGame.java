@@ -7,25 +7,28 @@ import org.xflash.lwjgl.azul.model.DropZone;
 import org.xflash.lwjgl.azul.model.Fabrick;
 import org.xflash.lwjgl.azul.model.Player;
 import org.xflash.lwjgl.azul.model.TileSet;
-import org.xflash.lwjgl.azul.observer.BeanWrapper;
 import org.xflash.lwjgl.azul.states.InGameState;
 import org.xflash.lwjgl.azul.states.MainMenuState;
 import org.xflash.lwjgl.azul.states.SplashScreen;
 import org.xflash.lwjgl.azul.states.States;
 
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AzulGame extends StateBasedGame {
 
+    private final PropertyChangeSupport support;
     private TileSet tileSet = new TileSet();
-    private BeanWrapper<List<Player>> players = new BeanWrapper<>();
-    private BeanWrapper<Player> currentPlayer = new BeanWrapper<>();
-    private BeanWrapper<List<Fabrick>> fabricks = new BeanWrapper<>();
-    private BeanWrapper<DropZone> dropZone = new BeanWrapper<>();
+
+    private List<Player> players = null;
+    private Player currentPlayer = null;
+    private List<Fabrick> fabricks = null;
+    private DropZone dropZone = null;
 
     AzulGame() {
         super("AZUL");
+        support = new PropertyChangeSupport(this);
     }
 
     @Override
@@ -33,21 +36,26 @@ public class AzulGame extends StateBasedGame {
         // The first state added will be the one that is loaded first, when the application is launched
         this.addState(new SplashScreen());
         this.addState(new MainMenuState());
-        this.addState(new InGameState(this, dropZone, currentPlayer, fabricks));
-        dropZone = new BeanWrapper<>(new DropZone());
+        InGameState inGameState = new InGameState(this);
+        this.addState(inGameState);
+        support.addPropertyChangeListener("players", inGameState::onPlayersListChange);
+        support.addPropertyChangeListener("currentPlayer", inGameState::onCurrentPlayerChange);
+        support.addPropertyChangeListener("dropZone", inGameState::onDropZoneChange);
+        support.addPropertyChangeListener("fabricks", inGameState::onFabricksListChange);
     }
 
     public void setup(int nb) {
-        List<Player> playerList = createPlayerList(nb);
-        players.set(playerList);
-        currentPlayer.set(playerList.get(0));
+        setDropZone(new DropZone());
+        setPlayers(createPlayerList(nb));
         tileSet.reset();
-        dropZone.cleanObservers();
-        fabricks.set(createFabricks(nb));
-        dropZone.get().clean();
+        setFabricks(createFabricks(nb));
+        dropZone.clean();
+        fabricks.forEach(Fabrick::pick);
+        setCurrentPlayer(players.get(0));
 
         enterState(States.IN_GAME.ordinal());
     }
+
 
     private List<Player> createPlayerList(int nb) {
         List<Player> list = new ArrayList<>();
@@ -73,23 +81,41 @@ public class AzulGame extends StateBasedGame {
     private List<Fabrick> createFabricksList(int nb) {
         List<Fabrick> fabricks = new ArrayList<>();
         for (int i = 0; i < nb; i++) {
-            Fabrick fabrick = new Fabrick(tileSet, dropZone.get());
-            fabricks.add(fabrick);
-            fabrick.pick();
+            fabricks.add(new Fabrick(tileSet, dropZone));
         }
         return fabricks;
     }
 
     public void switchPlayer() {
-        Player cp = currentPlayer.get();
-        List<Player> playerList = this.players.get();
-        int i = playerList.indexOf(cp);
-        int newIdx = i + 1 >= playerList.size() ? 0 : i + 1;
-        currentPlayer.set(playerList.get(newIdx));
+        int i = this.players.indexOf(currentPlayer);
+        int newIdx = i + 1 >= this.players.size() ? 0 : i + 1;
+        setCurrentPlayer(this.players.get(newIdx));
         enterState(States.IN_GAME.ordinal());
     }
 
     public TileSet getTileSet() {
         return tileSet;
+    }
+
+
+    public void setPlayers(List<Player> playerList) {
+        support.firePropertyChange("players", this.players, playerList);
+        this.players = playerList;
+    }
+
+    public void setDropZone(DropZone dropZone) {
+        support.firePropertyChange("dropZone", this.dropZone, dropZone);
+        this.dropZone = dropZone;
+
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        support.firePropertyChange("currentPlayer", this.currentPlayer, currentPlayer);
+        this.currentPlayer = currentPlayer;
+    }
+
+    public void setFabricks(List<Fabrick> fabricks) {
+        support.firePropertyChange("fabricks", this.fabricks, fabricks);
+        this.fabricks = fabricks;
     }
 }

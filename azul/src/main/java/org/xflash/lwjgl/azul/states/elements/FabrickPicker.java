@@ -12,6 +12,7 @@ import org.xflash.lwjgl.azul.model.Tile;
 import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
 import org.xflash.lwjgl.azul.ui.MouseOverShape;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +43,8 @@ public class FabrickPicker {
         };
     }
 
-    void onTileListChange(List<Tile> updated) {
+    void onTileListChange(PropertyChangeEvent event) {
+        List<Tile> updated = (List<Tile>) event.getNewValue();
         subTiles.clear();
         int sz = updated.size();
         if (sz > 0) {

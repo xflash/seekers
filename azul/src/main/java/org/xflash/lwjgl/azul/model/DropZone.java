@@ -1,19 +1,40 @@
 package org.xflash.lwjgl.azul.model;
 
-import org.xflash.lwjgl.azul.observer.BeanWrapper;
-
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class DropZone {
 
-    private BeanWrapper<List<Tile>> tiles = new BeanWrapper<>(Collections.emptyList());
+    private final PropertyChangeSupport support;
 
-    public void clean() {
-        tiles.set(Collections.emptyList());
+    private List<Tile> tiles = new ArrayList<>();
+
+    public DropZone() {
+        support = new PropertyChangeSupport(this);
     }
 
-    public BeanWrapper<List<Tile>> getTiles() {
+    public void clean() {
+        setTiles(Collections.emptyList());
+    }
+
+    public List<Tile> getTiles() {
         return tiles;
+    }
+
+    public void setTiles(List<Tile> tiles) {
+        support.firePropertyChange("tiles", this.tiles, tiles);
+        this.tiles = tiles;
+    }
+
+    public void cleanObservers() {
+        Arrays.stream(support.getPropertyChangeListeners()).forEach(support::removePropertyChangeListener);
+    }
+
+    public void addTilesObserver(PropertyChangeListener listener) {
+        support.addPropertyChangeListener("tiles", listener);
     }
 }

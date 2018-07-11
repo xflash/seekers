@@ -5,11 +5,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.GUIContext;
 import org.xflash.lwjgl.azul.model.Fabrick;
 import org.xflash.lwjgl.azul.model.Player;
-import org.xflash.lwjgl.azul.observer.BeanWrapper;
-import org.xflash.lwjgl.azul.observer.Observer;
 import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
 
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +31,7 @@ public class FabricksPicker  {
 
                     FabrickPicker fabrickPicker = new FabrickPicker(guiContext, fabrick, x + x1, y + y1, radius / 3);
                     pickers.add(fabrickPicker);
-                    fabrick.getTiles().addObserver(fabrickPicker::onTileListChange);
+                    fabrick.addTilesObserver(fabrickPicker::onTileListChange);
 //                    fabrick.register(fabrickPicker);
 //                    fabrickPicker.onChange(fabrick.tileList.tiles);
                 });

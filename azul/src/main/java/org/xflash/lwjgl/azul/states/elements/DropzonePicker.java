@@ -9,6 +9,7 @@ import org.xflash.lwjgl.azul.model.Tile;
 import org.xflash.lwjgl.azul.states.dispatcher.RadialDispatcher;
 import org.xflash.lwjgl.azul.ui.MouseOverShape;
 
+import java.beans.PropertyChangeEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,8 +33,9 @@ public class DropzonePicker  {
         }
     }
 
-    public void onTilesChange(List<Tile> updated) {
-        System.out.println("Dropzon onChange = ");
+    public void onTilesChange(PropertyChangeEvent evt) {
+        System.out.println("Dropzon onChange = "+evt);
+        List<Tile> updated = (List<Tile>) evt.getNewValue();
         subTiles.clear();
         if(updated.size()>0) {
             new RadialDispatcher(updated.size(), 10)

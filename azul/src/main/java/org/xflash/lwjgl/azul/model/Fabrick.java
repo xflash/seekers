@@ -1,9 +1,9 @@
 package org.xflash.lwjgl.azul.model;
 
 import org.newdawn.slick.Color;
-import org.xflash.lwjgl.azul.observer.BeanWrapper;
-import org.xflash.lwjgl.azul.observer.Observable;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,9 +16,11 @@ public class Fabrick {
     private final TileSet tileSet;
     private final DropZone dropZone;
 
-    private BeanWrapper<List<Tile>> tiles = new BeanWrapper<>(Collections.emptyList());
+    private List<Tile> tiles = new ArrayList<>();
+    private PropertyChangeSupport support;
 
     public Fabrick(TileSet tileSet, DropZone dropZone) {
+        this.support = new PropertyChangeSupport(this);
         this.tileSet = tileSet;
         this.dropZone = dropZone;
     }
@@ -32,25 +34,30 @@ public class Fabrick {
         for (int i = 0; i < nbPick; i++) {
             topick.add(tileSet.pick());
         }
-        tiles.set(topick);
+        setTiles(topick);
+    }
+
+    public void setTiles(List<Tile> tiles) {
+        support.firePropertyChange("tiles", this.tiles, tiles);
+        this.tiles =tiles;
     }
 
 
     public void playerPick(Player currentPlayer, final Color color) {
-        List<Tile> playerTiles = currentPlayer.getTiles().get();
-        List<Tile> dropZoneTiles = dropZone.getTiles().get();
-        for (Tile tile : this.tiles.get()) {
+        List<Tile> playerTiles = new ArrayList<>(currentPlayer.getTiles());
+        List<Tile> dropZoneTiles = new ArrayList<>(dropZone.getTiles());
+        for (Tile tile : this.tiles) {
             if (tile.getColor().equals(color))
                 playerTiles.add(tile);
             else
                 dropZoneTiles.add(tile);
         }
-        tiles.set(Collections.emptyList());
-        dropZone.getTiles().set(dropZoneTiles);
-        currentPlayer.getTiles().set(playerTiles);
+        setTiles(Collections.emptyList());
+        dropZone.setTiles(dropZoneTiles);
+        currentPlayer.setTiles(playerTiles);
     }
 
-    public Observable<List<Tile>> getTiles() {
-        return tiles;
+    public void addTilesObserver(PropertyChangeListener propertyChangeListener) {
+        support.addPropertyChangeListener("tiles", propertyChangeListener);
     }
 }
